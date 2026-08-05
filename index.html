@@ -1,3 +1,20 @@
+<script>
+  function lerTexto(idElemento) {
+    // Cancela qualquer fala que esteja acontecendo no momento
+    window.speechSynthesis.cancel();
+
+    // Pega o texto do elemento desejado
+    const texto = document.getElementById(idElemento).innerText;
+    
+    // Cria a mensagem de voz
+    const mensagem = new SpeechSynthesisUtterance(texto);
+    mensagem.lang = 'pt-BR'; // Define o idioma para português
+    mensagem.rate = 1.0;     // Velocidade da fala (0.5 a 2.0)
+
+    // Fala o texto
+    window.speechSynthesis.speak(mensagem);
+  }
+</script>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
