@@ -1,20 +1,3 @@
-<script>
-  function lerTexto(idElemento) {
-    // Cancela qualquer fala que esteja acontecendo no momento
-    window.speechSynthesis.cancel();
-
-    // Pega o texto do elemento desejado
-    const texto = document.getElementById(idElemento).innerText;
-    
-    // Cria a mensagem de voz
-    const mensagem = new SpeechSynthesisUtterance(texto);
-    mensagem.lang = 'pt-BR'; // Define o idioma para português
-    mensagem.rate = 1.0;     // Velocidade da fala (0.5 a 2.0)
-
-    // Fala o texto
-    window.speechSynthesis.speak(mensagem);
-  }
-</script>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -148,6 +131,36 @@
     .container {
       max-width: 1000px;
       margin: 0 auto;
+    }
+
+    /* Estilos dos Botões de Áudio (Voz) */
+    .audio-controls {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .btn-voice {
+      background-color: var(--primary);
+      color: var(--text-header);
+      border: 2px solid var(--border-color);
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-voice:hover {
+      background-color: var(--primary-hover);
+    }
+
+    .btn-stop {
+      background-color: var(--accent);
     }
 
     /* ==========================================================================
@@ -471,9 +484,13 @@
       </fieldset>
     </aside>
 
-    <header role="banner">
+    <header role="banner" id="cabecalho">
       <h1>Guia de Segurança Digital Acessível</h1>
       <p>Aprenda a se proteger na internet com orientações simples, diretas e projetadas para todos os públicos.</p>
+      <div class="audio-controls" style="justify-content: center; margin-top: 1rem;">
+        <button type="button" class="btn-voice" onclick="lerTexto('cabecalho')">🔊 Ouvir Cabeçalho</button>
+        <button type="button" class="btn-voice btn-stop" onclick="pararLeitura()">❌ Parar</button>
+      </div>
     </header>
 
     <nav aria-label="Menu Rápido de Tópicos">
@@ -491,6 +508,11 @@
       <section id="senhas" aria-labelledby="titulo-senhas">
         <h2 id="titulo-senhas" class="section-title">1. Senhas e Autenticação Segura</h2>
         
+        <div class="audio-controls">
+          <button type="button" class="btn-voice" onclick="lerTexto('senhas')">🔊 Ouvir esta Seção</button>
+          <button type="button" class="btn-voice btn-stop" onclick="pararLeitura()">❌ Parar Leitura</button>
+        </div>
+
         <details class="tip-card" open>
           <summary>Como criar uma frase de senha memorável e forte</summary>
           <div class="card-content">
@@ -525,6 +547,11 @@
       <section id="golpes" aria-labelledby="titulo-golpes">
         <h2 id="titulo-golpes" class="section-title">2. Identificação e Prevenção de Golpes</h2>
 
+        <div class="audio-controls">
+          <button type="button" class="btn-voice" onclick="lerTexto('golpes')">🔊 Ouvir esta Seção</button>
+          <button type="button" class="btn-voice btn-stop" onclick="pararLeitura()">❌ Parar Leitura</button>
+        </div>
+
         <details class="tip-card">
           <summary>Como reconhecer mensagens falsas (Phishing)</summary>
           <div class="card-content">
@@ -552,6 +579,11 @@
       <section id="privacidade" aria-labelledby="titulo-privacidade">
         <h2 id="titulo-privacidade" class="section-title">3. Privacidade e Proteção de Dados</h2>
 
+        <div class="audio-controls">
+          <button type="button" class="btn-voice" onclick="lerTexto('privacidade')">🔊 Ouvir esta Seção</button>
+          <button type="button" class="btn-voice btn-stop" onclick="pararLeitura()">❌ Parar Leitura</button>
+        </div>
+
         <details class="tip-card">
           <summary>Navegação Acessível e Segura em Wi-Fi Público</summary>
           <div class="card-content">
@@ -578,6 +610,12 @@
 
       <section id="checklist" aria-labelledby="titulo-checklist">
         <h2 id="titulo-checklist" class="section-title">4. Checklist de Segurança Pessoal</h2>
+        
+        <div class="audio-controls">
+          <button type="button" class="btn-voice" onclick="lerTexto('checklist')">🔊 Ouvir esta Seção</button>
+          <button type="button" class="btn-voice btn-stop" onclick="pararLeitura()">❌ Parar Leitura</button>
+        </div>
+
         <p style="margin-bottom: 1rem;">Marque os itens que você já aplicou na sua rotina para verificar seu nível de proteção:</p>
         
         <div class="checklist-box">
@@ -607,6 +645,11 @@
       <section id="glossario" aria-labelledby="titulo-glossario">
         <h2 id="titulo-glossario" class="section-title">5. Glossário de Segurança Simplicado</h2>
         
+        <div class="audio-controls">
+          <button type="button" class="btn-voice" onclick="lerTexto('glossario')">🔊 Ouvir Glossário</button>
+          <button type="button" class="btn-voice btn-stop" onclick="pararLeitura()">❌ Parar Leitura</button>
+        </div>
+
         <dl class="glossary-grid">
           <div class="glossary-item">
             <dt>Phishing</dt>
@@ -637,5 +680,24 @@
 
   </div>
 
+  <script>
+    function lerTexto(idElemento) {
+      window.speechSynthesis.cancel(); // Para leituras anteriores
+
+      const elemento = document.getElementById(idElemento);
+      if (!elemento) return;
+
+      const texto = elemento.innerText;
+      const mensagem = new SpeechSynthesisUtterance(texto);
+      mensagem.lang = 'pt-BR';
+      mensagem.rate = 1.0;
+
+      window.speechSynthesis.speak(mensagem);
+    }
+
+    function pararLeitura() {
+      window.speechSynthesis.cancel();
+    }
+  </script>
 </body>
 </html>
