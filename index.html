@@ -1,177 +1,19 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sistema de Acessibilidade - Orientação Espacial</title>
-  
-  <style>
-    /* Estilos de Alto Contraste por Padrão (Fundo Preto / Texto Amarelo) */
-    :root {
-      --bg-color: #000000;
-      --text-color: #FFFF00;
-      --card-bg: #111111;
-      --btn-bg: #FFFF00;
-      --btn-text: #000000;
-      --focus-outline: #00FFFF;
-    }
+// A sua função de leitura por voz
+function lerTexto(texto) {
+  window.speechSynthesis.cancel(); // Para leituras anteriores
 
-    /* Tema de Alto Contraste Invertido (Fundo Branco / Texto Preto) */
-    body.tema-claro {
-      --bg-color: #FFFFFF;
-      --text-color: #000000;
-      --card-bg: #F0F0F0;
-      --btn-bg: #000000;
-      --btn-text: #FFFFFF;
-      --focus-outline: #FF0000;
-    }
+  const mensagem = new SpeechSynthesisUtterance(texto);
+  mensagem.lang = 'pt-BR';
+  mensagem.rate = 1.0;
 
-    body {
-      font-family: Arial, sans-serif;
-      background-color: var(--bg-color);
-      color: var(--text-color);
-      margin: 0;
-      padding: 20px;
-      text-align: center;
-      transition: background-color 0.3s, color 0.3s;
-    }
+  window.speechSynthesis.speak(mensagem);
+}
 
-    h1 {
-      font-size: 2.2rem;
-      margin-bottom: 20px;
-    }
+// Exemplo: Função disparada quando o PIR detecta presença no Arduino
+function aoDetectarPresencaPIR() {
+  // 1. Atualiza a mensagem na tela
+  document.getElementById('status-texto').innerText = "⚠️ Presença Detectada!";
 
-    /* Card de Status da Presença */
-    #status-container {
-      border: 4px solid var(--text-color);
-      border-radius: 12px;
-      padding: 30px;
-      margin: 20px auto;
-      max-width: 600px;
-      background-color: var(--card-bg);
-    }
-
-    #status-texto {
-      font-size: 1.8rem;
-      font-weight: bold;
-    }
-
-    /* Sinalização Visual de Alerta (Piscante e Vibrante) */
-    .alerta-ativo {
-      background-color: #FF0000 !important;
-      color: #FFFFFF !important;
-      border-color: #FFFFFF !important;
-      animation: piscar 0.8s infinite alternate;
-    }
-
-    @keyframes piscar {
-      from { opacity: 1; }
-      to { opacity: 0.3; }
-    }
-
-    /* Estilo dos Botões Acessíveis */
-    .btn-acessivel {
-      background-color: var(--btn-bg);
-      color: var(--btn-text);
-      border: 3px solid var(--text-color);
-      padding: 18px 25px;
-      font-size: 1.4rem;
-      font-weight: bold;
-      margin: 10px;
-      cursor: pointer;
-      border-radius: 8px;
-      display: inline-block;
-    }
-
-    /* Destaque de Foco para Navegação por Teclado (Tecla TAB) */
-    .btn-acessivel:focus {
-      outline: 6px solid var(--focus-outline);
-      outline-offset: 4px;
-      transform: scale(1.05);
-    }
-  </style>
-</head>
-<body>
-
-  <!-- Título do Sistema -->
-  <h1 id="titulo" tabindex="0">Painel de Acessibilidade: Orientação Espacial</h1>
-
-  <!-- Painel Visual de Sinalização do Sensor PIR -->
-  <main id="status-container" tabindex="0">
-    <p id="status-texto">Status: Monitorando ambiente...</p>
-  </main>
-
-  <!-- Controles Interativos via Teclado e Mouse -->
-  <nav aria-label="Controles do Sistema">
-    <button class="btn-acessivel" onclick="simularPIR()" onfocus="falar('Botão: Simular Presença do PIR')">
-      🚨 Simular Presença (PIR)
-    </button>
-    
-    <button class="btn-acessivel" onclick="pararAlertas()" onfocus="falar('Botão: Parar Alertas e Limpar')">
-      ⏹️ Parar Alertas
-    </button>
-
-    <button class="btn-acessivel" onclick="alternarContraste()" onfocus="falar('Botão: Alternar Modo de Contraste')">
-      🎨 Alternar Alto Contraste
-    </button>
-  </nav>
-
-  <script>
-    // --- 1. SINTETIZADOR DE VOZ (Web Speech API) ---
-    function falar(texto) {
-      // Cancela a fala anterior para dar prioridade à nova ação
-      window.speechSynthesis.cancel();
-
-      const fala = new SpeechSynthesisUtterance(texto);
-      fala.lang = 'pt-BR'; // Idioma em Português
-      fala.rate = 1.1;     // Velocidade da voz (1.0 é normal)
-      fala.pitch = 1.0;    // Tom da voz
-
-      window.speechSynthesis.speak(fala);
-    }
-
-    // --- 2. SINALIZAÇÃO VISUAL E ALERTA DE PRESENÇA ---
-    function simularPIR() {
-      const container = document.getElementById('status-container');
-      const texto = document.getElementById('status-texto');
-
-      // Atualiza o painel visual
-      texto.innerText = "⚠️ ATENÇÃO: Presença Detectada no Ambiente!";
-      container.classList.add('alerta-ativo');
-
-      // Emite o aviso por áudio
-      falar("Atenção! Presença ou movimento detectado no ambiente.");
-
-      // Limpa automaticamente o alerta após 6 segundos
-      setTimeout(() => {
-        pararAlertas();
-      }, 6000);
-    }
-
-    // --- 3. RESET DE ALERTAS ---
-    function pararAlertas() {
-      const container = document.getElementById('status-container');
-      const texto = document.getElementById('status-texto');
-
-      container.classList.remove('alerta-ativo');
-      texto.innerText = "Status: Monitorando ambiente...";
-      
-      falar("Área livre. Monitoramento ativo.");
-    }
-
-    // --- 4. ALTERNÂNCIA DE ALTO CONTRASTE ---
-    function alternarContraste() {
-      document.body.classList.toggle('tema-claro');
-      const modoAtual = document.body.classList.contains('tema-claro') ? "Alto contraste claro ativado" : "Alto contraste escuro ativado";
-      falar(modoAtual);
-    }
-
-    // --- 5. INTERATIVIDADE VIA TECLADO & BOAS-VINDAS ---
-    // Executado assim que a página carrega
-    window.onload = () => {
-      falar("Sistema de orientação espacial pronto. Use a tecla Tab para navegar pelos controles.");
-    };
-  </script>
-
-</body>
-</html>
+  // 2. Chama a sua função de voz para avisar o usuário
+  lerTexto("Atenção! Presença detectada no ambiente.");
+}
